@@ -1,0 +1,22 @@
+.switchingMode, .switchingMode *{
+    transition: 
+        background-color 0.5s, 
+        color 0.5s,
+        border-color 0.5s;
+}
+.darkMode{
+    background-color: #222;
+    color: white;
+}
+/*specific*/
+.darkMode .darkModeSelector{
+    background-color: #666;
+    border-color: black;
+}
+.darkMode .darkModeSelector div{
+    background-color: #ccc;
+    border-color: #333;
+}
+.darkMode img {
+    border-color:#666;
+}

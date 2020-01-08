@@ -1,0 +1,36 @@
+/*checkbox*/
+.slideCheckBox {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 3px;
+    border: 1px solid#ccc;
+    background-color:#eee;
+    border-radius: 30px;
+    min-width: 52px;
+}
+.slideCheckBox > input{
+     display: none;
+}
+.slideCheckBox > label{
+    cursor: pointer;
+}
+.slideCheckBox > label > div{
+    height: 20px;
+    width: 20px;
+    border: 1px solid green;
+    background-color: lightgreen;
+    border-radius: 50%;
+    margin-left: 0;
+    margin-right: 30px;
+    transition: margin-left 0.2s, margin-right 0.2s;
+}
+
+.slideCheckBox > input:checked + label > div{
+    margin-left: 30px;
+    margin-right: 0;
+}
+
+/*other*/
+img {
+    border: 10px solid #ddd;
+}
