@@ -13,7 +13,7 @@
     background-color: #666;
     border-color: black;
 }
-.darkMode .darkModeSelector div{
+.darkMode .darkModeSelector > label::after{
     background-color: #ccc;
     border-color: #333;
 }

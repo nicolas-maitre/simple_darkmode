@@ -1,66 +1,95 @@
+"use strict"
 /*  Original creator: Nicolas Maitre
 *   Date: 08.01.2020
 *   Requires: utils.js */
+var DarkMode = new(function(){
+    var _this = this;
+    var darkModeSelector = false;
+    var isSwitchingMode = false;
 
-var darkModeSelector = false;
-var isSwitchingMode = false;
+    document.addEventListener("DOMContentLoaded", boot);
+    function boot(){
+        //get input
+        darkModeSelector = document.querySelector(".darkModeSelector > input");
 
-document.addEventListener("DOMContentLoaded", boot);
-function boot(){
-    //get input
-    darkModeSelector = document.querySelector(".darkModeSelector > input");
+        //load from cookie
+        var mode = Cookies.get()["lightMode"];
+        if(mode){
+            _this.setMode(mode, false);
+        }
 
-    //load from cookie
-    var mode = Cookies.get()["lightMode"];
-    if(mode){
-        setMode(mode, false);
+        //add input event
+        darkModeSelector.addEventListener("change", function(evt){
+            var mode = darkModeSelector.checked?"dark":"light";
+            _this.setMode(mode);
+        });
     }
 
-    //add input event
-    darkModeSelector.addEventListener("change", function(evt){
-        var mode = darkModeSelector.checked?"dark":"light";
-        setMode(mode);
-    });
-}
+    //set actions
+    this.setMode = function(mode, animate=true){
+        darkModeSelector.checked = (mode=="dark");
+        
+        Cookies.set("lightMode", mode);
+        
+        if(animate){
+            animateModeChange(mode);
+        } else {
+            displayMode(mode);
+        }
+    }
 
-//set actions
-function setMode(mode, animate=true){
-    darkModeSelector.checked = (mode=="dark");
-    
-    Cookies.set("lightMode", mode);
-    
-    if(animate){
-        animateModeChange(mode);
-    } else {
+    //animates change
+    async function animateModeChange(mode){
+        //animation class
+        await async_requestAnimationFrame();
+        isSwitchingMode = true;
+        document.body.classList.add("switchingMode");
+        //display
+        await async_requestAnimationFrame();
         displayMode(mode);
+        isSwitchingMode = false;
+        //remove animation
+        await async_setTimeout(500);
+        await async_requestAnimationFrame();
+        if(!isSwitchingMode){
+            document.body.classList.remove("switchingMode");
+        }
     }
-}
 
-//animates change
-async function animateModeChange(mode){
-    //animation class
-    await asyncReqAnimFrm();
-    isSwitchingMode = true;
-    document.body.classList.add("switchingMode");
-    //display
-    await asyncReqAnimFrm();
-    displayMode(mode);
-    isSwitchingMode = false;
-    //remove animation
-    await asyncTimeout(500);
-    await asyncReqAnimFrm();
-    if(!isSwitchingMode){
-        document.body.classList.remove("switchingMode");
-    }
-}
+    function displayMode(mode){
+        //body
+        switch(mode){
+            case "dark": document.body.classList.add("darkMode"); break;
+            case "light": document.body.classList.remove("darkMode"); break;
+            case "toggle":
+            default: document.body.classList.toggle("darkMode"); break;
+        }
+        //alt attr
+        swapModeAttributes("src", mode);
+        swapModeAttributes("class", mode);
+        swapModeAttributes("style", mode);
+        //other
 
-function displayMode(mode){
-    //body
-    switch(mode){
-        case "dark": document.body.classList.add("darkMode"); break;
-        case "light": document.body.classList.remove("darkMode"); break;
-        case "toggle":
-        default: document.body.classList.toggle("darkMode"); break;
     }
-    //bootstrap (maybe)
-}
+
+    function swapModeAttributes(attribute, mode){
+        var darkAttribute = `dark_${attribute}`;
+        var lightAttribute = `light_${attribute}`;
+        var elems = document.querySelectorAll(`*[${darkAttribute}], *[${lightAttribute}]`);
+        var oppositeMode = (mode == "dark")?"light":"dark";
+        elems.forEach((elem) => {
+            swapModeAttribute(elem, attribute, oppositeMode, mode)
+        });
+    }
+    function swapModeAttribute(elem, attribute, fromMode, toMode){
+        var fromAttr = `${fromMode}_${attribute}`;
+        var toAttr = `${toMode}_${attribute}`;
+        if(!elem.hasAttribute(toAttr)){
+            return;
+        }
+        if(!elem.hasAttribute(fromAttr) && elem.hasAttribute(attribute)){
+            elem.setAttribute(fromAttr, elem.getAttribute(attribute));
+        }
+        elem.setAttribute(attribute, elem.getAttribute(toAttr));
+    }
+});
