@@ -4,6 +4,11 @@
 *   Requires: utils.js */
 var DarkMode = new(function(){
     var _this = this;
+    
+    var LIGHT_MODE_CLASS = "lightMode";
+    var DARK_MODE_CLASS = "darkMode";
+    var SWITCH_ANIMATION_CLASS = "switchingMode";
+
     var darkModeSelector = false;
     var isSwitchingMode = false;
 
@@ -43,7 +48,7 @@ var DarkMode = new(function(){
         //animation class
         await async_requestAnimationFrame();
         isSwitchingMode = true;
-        document.body.classList.add("switchingMode");
+        document.body.classList.add(SWITCH_ANIMATION_CLASS);
         //display
         await async_requestAnimationFrame();
         displayMode(mode);
@@ -52,17 +57,26 @@ var DarkMode = new(function(){
         await async_setTimeout(500);
         await async_requestAnimationFrame();
         if(!isSwitchingMode){
-            document.body.classList.remove("switchingMode");
+            document.body.classList.remove(SWITCH_ANIMATION_CLASS);
         }
     }
 
     function displayMode(mode){
         //body
         switch(mode){
-            case "dark": document.body.classList.add("darkMode"); break;
-            case "light": document.body.classList.remove("darkMode"); break;
+            case "dark": 
+                document.body.classList.add(DARK_MODE_CLASS); 
+                document.body.classList.remove(LIGHT_MODE_CLASS); 
+                break;
+            case "light": 
+                document.body.classList.remove(DARK_MODE_CLASS);
+                document.body.classList.add(LIGHT_MODE_CLASS);
+                break;
             case "toggle":
-            default: document.body.classList.toggle("darkMode"); break;
+            default: 
+                document.body.classList.toggle(DARK_MODE_CLASS); 
+                document.body.classList.toggle(LIGHT_MODE_CLASS); 
+            break;
         }
         //alt attr
         swapModeAttributes("src", mode);
