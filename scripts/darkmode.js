@@ -83,29 +83,25 @@ var DarkMode = new(function(){
         swapModeAttributes("src", mode);
         swapModeAttributes("class", mode);
         swapModeAttributes("style", mode);
+        //alt class
         modeClassToggler(mode);
         //other
 
     }
 
     function swapModeAttributes(attribute, mode){
-        var darkAttribute = `dark_${attribute}`;
-        var lightAttribute = `light_${attribute}`;
-        var elems = document.querySelectorAll(`*[${darkAttribute}], *[${lightAttribute}]`);
+        var fromAttr = `${OPPOSITE_MODE[mode]}_${attribute}`; //f.e. dark_src
+        var toAttr = `${mode}_${attribute}`; //f.e light_src
+        var elems = document.querySelectorAll(`*[${fromAttr}], *[${toAttr}]`);
         elems.forEach((elem) => {
-            swapModeAttribute(elem, attribute, OPPOSITE_MODE[mode], mode)
+            if(!elem.hasAttribute(toAttr)){
+                return; //no special attr
+            }
+            if(!elem.hasAttribute(fromAttr) && elem.hasAttribute(attribute)){
+                elem.setAttribute(fromAttr, elem.getAttribute(attribute)); //set opposite mode attribute if empty
+            }
+            elem.setAttribute(attribute, elem.getAttribute(toAttr));
         });
-    }
-    function swapModeAttribute(elem, attribute, fromMode, toMode){
-        var fromAttr = `${fromMode}_${attribute}`;
-        var toAttr = `${toMode}_${attribute}`;
-        if(!elem.hasAttribute(toAttr)){
-            return;
-        }
-        if(!elem.hasAttribute(fromAttr) && elem.hasAttribute(attribute)){
-            elem.setAttribute(fromAttr, elem.getAttribute(attribute));
-        }
-        elem.setAttribute(attribute, elem.getAttribute(toAttr));
     }
 
     function modeClassToggler(mode){
