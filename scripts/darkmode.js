@@ -8,6 +8,7 @@ var DarkMode = new(function(){
     var LIGHT_MODE_CLASS = "lightMode";
     var DARK_MODE_CLASS = "darkMode";
     var SWITCH_ANIMATION_CLASS = "switchingMode";
+    var OPPOSITE_MODE = {dark: "light", light: "dark"};
 
     var darkModeSelector = false;
     var isSwitchingMode = false;
@@ -82,6 +83,7 @@ var DarkMode = new(function(){
         swapModeAttributes("src", mode);
         swapModeAttributes("class", mode);
         swapModeAttributes("style", mode);
+        modeClassToggler(mode);
         //other
 
     }
@@ -90,9 +92,8 @@ var DarkMode = new(function(){
         var darkAttribute = `dark_${attribute}`;
         var lightAttribute = `light_${attribute}`;
         var elems = document.querySelectorAll(`*[${darkAttribute}], *[${lightAttribute}]`);
-        var oppositeMode = (mode == "dark")?"light":"dark";
         elems.forEach((elem) => {
-            swapModeAttribute(elem, attribute, oppositeMode, mode)
+            swapModeAttribute(elem, attribute, OPPOSITE_MODE[mode], mode)
         });
     }
     function swapModeAttribute(elem, attribute, fromMode, toMode){
@@ -105,5 +106,20 @@ var DarkMode = new(function(){
             elem.setAttribute(fromAttr, elem.getAttribute(attribute));
         }
         elem.setAttribute(attribute, elem.getAttribute(toAttr));
+    }
+
+    function modeClassToggler(mode){
+        var toggleAttrSuffix = "_toggle_class";
+        var removeToggleAttr = OPPOSITE_MODE[mode] + toggleAttrSuffix;
+        var addToggleAttr = mode + toggleAttrSuffix;
+        var elems = document.querySelectorAll(`*[${removeToggleAttr}], *[${addToggleAttr}]`);
+        elems.forEach((elem) => {
+            if(elem.hasAttribute(removeToggleAttr)){
+                elem.classList.remove(elem.getAttribute(removeToggleAttr));
+            }
+            if(elem.hasAttribute(addToggleAttr)){
+                elem.classList.add(elem.getAttribute(addToggleAttr));
+            }
+        });
     }
 });
