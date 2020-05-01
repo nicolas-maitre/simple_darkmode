@@ -35,7 +35,7 @@ It will only remove/add the specified class.
 ## Adding custom actions
 You can add extra code to further customise the experience in:
 - `animateModeChange()`: to customize the animation
-- `displayMode()`: to customize how elements switched from mode to mode / add special cases
+- `displayMode()`: to customize how elements are switched from mode to mode / add special cases
 
 ## Switching mode with javascript
 The `Darkmode` object contains the `setMode` method than you can call with the mode (light/dark) as parameter to switch mode.
